@@ -10,7 +10,7 @@ void WebServer::start() {
 
     // Главная страница
     CROW_ROUTE(app, "/")
-    ([this]() { return crow::response(readFile("../web/index.html")); });
+    ([this]() { return crow::response(readFile("web/index.html")); });
 
     // Эндпоинт для JSON данных
     CROW_ROUTE(app, "/api/data")
@@ -19,6 +19,13 @@ void WebServer::start() {
         data["message"] = "Hello from the Web Server!";
         return data;
     });
+
+    // статические файлы
+    CROW_ROUTE(app, "/app.js")
+    ([this]() { return crow::response(readFile("web/app.js")); });
+
+    CROW_ROUTE(app, "/styles.css")
+    ([this]() { return crow::response(readFile("web/styles.css")); });
 
     std::cout << "Web server with REST API started on http://localhost:8080"
               << std::endl;

@@ -3,18 +3,21 @@ FROM ubuntu:20.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y \
-    g++ cmake git curl \
-    libboost-all-dev  # Установка библиотеки Boost
+    cmake \
+    g++ \
+    wget \
+    # libboost-all-dev \
+    libasio-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN git clone https://github.com/ipkn/crow.git /crow
+RUN wget https://github.com/CrowCpp/Crow/releases/download/v1.2.0/Crow-1.2.0-Linux.deb \
+    && dpkg -i Crow-1.2.0-Linux.deb \
+    && rm Crow-1.2.0-Linux.deb
 
 WORKDIR /app
 
-COPY src/ src/
-COPY CMakeLists.txt .
+COPY . .
 
-RUN cmake -DCROW_INCLUDE_DIR=/crow/include . && make
+RUN mkdir build && cd build && cmake .. && make
 
-COPY web/ web/
-
-CMD ["./web_server"]
+CMD ["./build/web_server"]

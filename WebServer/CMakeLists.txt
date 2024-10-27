@@ -3,11 +3,12 @@ project(WebServer)
 
 set(CMAKE_CXX_STANDARD 20)
 
-# Указываем путь к Crow
-set(CROW_INCLUDE_DIR "/crow/include")
+find_package(Boost REQUIRED)
 
-# Создание исполняемого файла
+include_directories(/usr/include/crow)
+
 add_executable(web_server src/main.cpp src/WebServer.cpp)
 
-# Линкуем Crow к проекту
-target_include_directories(web_server PRIVATE ${CROW_INCLUDE_DIR})
+target_include_directories(web_server PRIVATE Boost::Boost)
+
+target_link_libraries(web_server PRIVATE pthread)
