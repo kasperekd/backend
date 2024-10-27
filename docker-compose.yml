@@ -1,0 +1,23 @@
+services:
+  webserver:
+    build: ./WebServer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+  websocketserver:
+    build: ./WebSocketServer
+    ports:
+      - "9000:9000"
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: signal_db
+    volumes:
+      - ./Database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
