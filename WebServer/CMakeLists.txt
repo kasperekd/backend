@@ -4,7 +4,6 @@ project(WebServer)
 set(CMAKE_CXX_STANDARD 20)
 
 find_package(Boost REQUIRED)
-
 include_directories(/usr/include/crow)
 
 add_executable(web_server src/main.cpp src/WebServer.cpp)

@@ -1,11 +1,15 @@
 cmake_minimum_required(VERSION 3.10)
-project(WebSocketServer)
+project(ReceiveServer)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(websocket_server src/main.cpp src/WebSocketServer.cpp)
+find_package(Boost REQUIRED)
+include_directories(/usr/include/crow)
 
-target_link_libraries(websocket_server)
+add_executable(receive_server src/main.cpp src/ReceiveServer.cpp)
+
+target_include_directories(receive_server PRIVATE Boost::Boost)
+target_link_libraries(receive_server PRIVATE pthread)
 
 
 

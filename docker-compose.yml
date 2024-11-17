@@ -6,8 +6,8 @@ services:
     depends_on:
       - db
 
-  websocketserver:
-    build: ./WebSocketServer
+  receiveserver:
+    build: ./ReceiveServer
     ports:
       - "9000:9000"
 

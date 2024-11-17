@@ -27,7 +27,7 @@ void WebServer::start() {
     CROW_ROUTE(app, "/styles.css")
     ([this]() { return crow::response(readFile("web/styles.css")); });
 
-    std::cout << "Web server with REST API started on http://localhost:8080"
+    std::cout << "Web server with REST API started on http://:8080"
               << std::endl;
     app.port(8080).multithreaded().run();
 }
