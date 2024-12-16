@@ -30,23 +30,26 @@ void PostgresDB::disconnect() {
 
 pqxx::result PostgresDB::executeQuery(
     const std::string& query,
-    const std::vector<std::optional<std::string>>& params) {
+    const std::vector<std::string>&
+        params) {  // используем простой vector<string>
     try {
-        // Преобразуем std::optional<std::string> в массив указателей const
-        // char*
+        // Отладка параметров
+        std::cout << "Parameters count: " << params.size() << std::endl;
+        for (const auto& param : params) {
+            std::cout << param << std::endl;
+        }
+
         std::vector<const char*> c_params;
         c_params.reserve(params.size());
+
+        // Преобразуем строки в const char*
         for (const auto& param : params) {
-            if (param.has_value()) {
-                c_params.push_back(param->c_str());
-            } else {
-                c_params.push_back(nullptr);  // NULL значение
-            }
+            c_params.push_back(param.c_str());
         }
 
         pqxx::work txn(*m_connection);
 
-        // Передаём параметры напрямую в exec_params через распаковку аргументов
+        // Выполнение запроса с параметрами
         pqxx::result res = txn.exec_params(query, c_params.data(),
                                            c_params.data() + c_params.size());
         txn.commit();

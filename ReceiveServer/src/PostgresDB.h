@@ -17,9 +17,14 @@ class PostgresDB {
     void disconnect();
 
     // pqxx::result executeQuery(const std::string& query);
-    pqxx::result executeQuery(
-        const std::string& query,
-        const std::vector<std::optional<std::string>>& params);
+    pqxx::result executeQuery(const std::string& query,
+                              const std::vector<std::string>& params);
+    void executeQueryWithParams(const std::string& query,
+                                const std::vector<std::string>& params);
+    void prepareStatement(const std::string& stmtName,
+                          const std::string& query);
+    void executePreparedQuery(const std::string& stmtName,
+                              const std::vector<std::string>& params);
 
    private:
     std::string m_connectionString;

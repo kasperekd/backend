@@ -10,10 +10,19 @@ void ReceiveServer::start() {
     crow::SimpleApp app;
 
     PostgresDB db(
-        "dbname=signal_db user=user password=password host=localhost "
-        "port=5432");
+        "dbname=signal_db user=user password=password host=db port=5432");
     db.connect();
 
+    // GET HEALTH
+    app.route_dynamic("/api/health")
+        .methods("GET"_method)([](const crow::request& req) {
+#ifdef DEBUG
+            std::cout << "Health check request received" << std::endl;
+#endif  // DEBUG
+            return crow::response(200, "Server is up and running");
+        });
+
+    // POST cellinfo
     app.route_dynamic("/api/cellinfo")
         .methods("POST"_method)([this, &db](const crow::request& req) {
             try {
@@ -71,16 +80,19 @@ void ReceiveServer::parseAndSaveData(const std::string& rawJson,
                 "rsrq) "
                 "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)";
 
-            db.executeQuery(
-                query,
-                {entry["type"].s(), std::to_string(latitude),
-                 std::to_string(longitude),
-                 std::to_string(entry["timestamp"].i()),
-                 std::to_string(entry["cellId"].i()),
-                 std::to_string(entry["signalStrength"].i()),
-                 std::to_string(entry["trackingAreaCode"].i()),
-                 entry["operator"].s(), std::to_string(entry["RSRP"].i()),
-                 std::to_string(entry["RSRQ"].i())});
+            std::vector<std::string> params = {
+                entry["type"].s(),
+                std::to_string(latitude),
+                std::to_string(longitude),
+                std::to_string(entry["timestamp"].i()),
+                std::to_string(entry["cellId"].i()),
+                std::to_string(entry["signalStrength"].i()),
+                std::to_string(entry["trackingAreaCode"].i()),
+                entry["operator"].s(),
+                std::to_string(entry["RSRP"].i()),
+                std::to_string(entry["RSRQ"].i())};
+
+            db.executeQuery(query, params);
         }
     } catch (const std::exception& e) {
         throw std::runtime_error(
