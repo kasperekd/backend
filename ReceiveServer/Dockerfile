@@ -8,6 +8,8 @@ RUN apt-get update && apt-get install -y \
     wget \
     # libboost-all-dev \
     libasio-dev \
+    libpqxx-dev \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
 RUN wget https://github.com/CrowCpp/Crow/releases/download/v1.2.0/Crow-1.2.0-Linux.deb \

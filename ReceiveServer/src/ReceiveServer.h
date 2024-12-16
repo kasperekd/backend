@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "PostgresDB.h"
+
 #define DEBUG 1
 
 class ReceiveServer {
@@ -14,6 +16,7 @@ class ReceiveServer {
 
    private:
     void onMessage(const std::string& message);
+    void parseAndSaveData(const std::string& rawJson, PostgresDB& db);
 };
 
 #endif  // RECEIVESERVER_H
