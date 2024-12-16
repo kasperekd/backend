@@ -1,7 +1,8 @@
 CREATE TABLE cell_data (
     id SERIAL PRIMARY KEY,
     type TEXT NOT NULL,
-    coordinates TEXT NOT NULL,
+    latitude DOUBLE PRECISION NOT NULL,
+    longitude DOUBLE PRECISION NOT NULL,
     timestamp BIGINT NOT NULL,
     cell_id BIGINT NOT NULL,
     signal_strength INT NOT NULL,
