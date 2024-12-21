@@ -3,6 +3,7 @@
 #include <crow.h>
 
 #include <iostream>
+#include <type_traits>
 
 #include "PostgresDB.h"
 
@@ -48,6 +49,7 @@ void ReceiveServer::start() {
 void ReceiveServer::parseAndSaveData(const std::string& rawJson,
                                      PostgresDB& db) {
     try {
+        std::cout << rawJson << std::endl;
         auto data = crow::json::load(rawJson);
 
         if (!data || data.error()) {
@@ -57,12 +59,20 @@ void ReceiveServer::parseAndSaveData(const std::string& rawJson,
         for (const auto& entry : data) {
             if (!entry.has("type") || !entry.has("coordinates") ||
                 !entry.has("timestamp") || !entry.has("cellId") ||
-                !entry.has("signalStrength") ||
-                !entry.has("trackingAreaCode") || !entry.has("operator") ||
-                !entry.has("RSRP") || !entry.has("RSRQ")) {
+                !entry.has("signalStrength") || !entry.has("operator")) {
                 throw std::runtime_error(
                     "Missing required fields in JSON entry.");
             }
+
+            // Optional fields (Tracking Area Code, RSRP, RSRQ)
+            std::string trackingAreaCode =
+                entry.has("trackingAreaCode")
+                    ? std::to_string(entry["trackingAreaCode"].i())
+                    : "NULL";
+            std::string rsrp =
+                entry.has("RSRP") ? std::to_string(entry["RSRP"].i()) : "NULL";
+            std::string rsrq =
+                entry.has("RSRQ") ? std::to_string(entry["RSRQ"].i()) : "NULL";
 
             // Парсинг координат
             std::string coordinates = entry["coordinates"].s();
@@ -87,10 +97,10 @@ void ReceiveServer::parseAndSaveData(const std::string& rawJson,
                 std::to_string(entry["timestamp"].i()),
                 std::to_string(entry["cellId"].i()),
                 std::to_string(entry["signalStrength"].i()),
-                std::to_string(entry["trackingAreaCode"].i()),
+                trackingAreaCode,
                 entry["operator"].s(),
-                std::to_string(entry["RSRP"].i()),
-                std::to_string(entry["RSRQ"].i())};
+                rsrp,
+                rsrq};
 
             db.executeQuery(query, params);
         }

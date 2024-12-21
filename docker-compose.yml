@@ -24,6 +24,7 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: signal_db
     volumes:
+      - db_data:/var/lib/postgresql/data
       - ./Database/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
@@ -33,3 +34,6 @@ services:
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  db_data:

@@ -28,31 +28,40 @@ void PostgresDB::disconnect() {
     }
 }
 
-pqxx::result PostgresDB::executeQuery(
-    const std::string& query,
-    const std::vector<std::string>&
-        params) {  // используем простой vector<string>
+pqxx::result PostgresDB::executeQuery(const std::string& query,
+                                      const std::vector<std::string>& params) {
     try {
-        // Отладка параметров
+        // Логирование параметров
         std::cout << "Parameters count: " << params.size() << std::endl;
-        for (const auto& param : params) {
-            std::cout << param << std::endl;
+        for (size_t i = 0; i < params.size(); ++i) {
+            std::cout << "Param[" << i << "]: " << params[i] << std::endl;
         }
 
+        if (params.size() != 10) {
+            throw std::runtime_error(
+                "Incorrect number of parameters for query. Expected 10.");
+        }
+
+        // Преобразование вектора строк в вектор const char*
         std::vector<const char*> c_params;
         c_params.reserve(params.size());
-
-        // Преобразуем строки в const char*
         for (const auto& param : params) {
+            if (param.empty()) {
+                throw std::runtime_error(
+                    "Empty string detected in query parameters.");
+            }
             c_params.push_back(param.c_str());
         }
 
         pqxx::work txn(*m_connection);
 
-        // Выполнение запроса с параметрами
-        pqxx::result res = txn.exec_params(query, c_params.data(),
-                                           c_params.data() + c_params.size());
+        // Используем параметры индивидуально, чтобы избежать проблем
+        pqxx::result res =
+            txn.exec_params(query, c_params[0], c_params[1], c_params[2],
+                            c_params[3], c_params[4], c_params[5], c_params[6],
+                            c_params[7], c_params[8], c_params[9]);
         txn.commit();
+
         return res;
     } catch (const std::exception& e) {
         throw std::runtime_error(
