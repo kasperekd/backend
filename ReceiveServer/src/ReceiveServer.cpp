@@ -7,12 +7,28 @@
 
 #include "PostgresDB.h"
 
+void tryReconnect(PostgresDB& db, int wait_seconds) {
+    while (true) {
+        try {
+            db.connect();
+            std::cout << "Successfully connected to the database." << std::endl;
+            return;
+        } catch (const std::exception& e) {
+            std::cerr << "Error connecting to the database: " << e.what()
+                      << std::endl;
+            std::cout << "Retrying in " << wait_seconds << " seconds..."
+                      << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(wait_seconds));
+        }
+    }
+}
 void ReceiveServer::start() {
     crow::SimpleApp app;
 
     PostgresDB db(
         "dbname=signal_db user=user password=password host=db port=5432");
-    db.connect();
+
+    tryReconnect(db, 5);
 
     // GET HEALTH
     app.route_dynamic("/api/health")
