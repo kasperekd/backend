@@ -17,6 +17,13 @@ services:
     networks:
       - app-network
 
+  calculation:
+    build: ./CalculationModule
+    depends_on:
+      - db
+    networks:
+      - app-network
+
   db:
     image: postgres:13
     environment:

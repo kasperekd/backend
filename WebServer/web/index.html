@@ -1,73 +1,23 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>My Web Server</title>
-</head>
-
-<body>
-    <header>
-        <h1>Welcome to My Web Server</h1>
-        <p>This is a simple web page served by the web server.</p>
-    </header>
-    <main>
-        <p>Current date and time: <span id="datetime"></span></p>
-        <button id="refreshButton">Refresh Date & Time</button>
-    </main>
-    <script src="app.js"></script>
-</body>
-
-</html> -->
-
-<!DOCTYPE html>
-<html>
-
-<head>
     <title>Интерактивная карта</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <style>
-        #map {
-            height: 600px;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
 </head>
 
 <body>
+    <div id="controls">
+        <input id="cellIdInput" type="text" placeholder="Введите Cell ID">
+        <button id="fetchButton">Запросить базовую станцию</button>
+        <button id="fetchAllButton">Загрузить все точки</button>
+    </div>
     <div id="map"></div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script>
-        // Инициализация карты
-        var map = L.map('map').setView([55.751244, 37.618423], 5); // Координаты центра карты
-
-        // Добавление слоя карты
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-        }).addTo(map);
-
-        // Массив с координатами для демонстрации
-        var coordinates = [
-            { latitude: 55.751244, longitude: 37.618423 }, // Москва
-            { latitude: 59.934280, longitude: 30.335099 }, // Санкт-Петербург
-            { latitude: 48.856613, longitude: 2.352222 },  // Париж
-            { latitude: 40.712776, longitude: -74.005974 }, // Нью-Йорк
-            { latitude: 34.052235, longitude: -118.243683 }, // Лос-Анджелес
-            { latitude: 51.507351, longitude: -0.127758 },  // Лондон
-            { latitude: 35.689487, longitude: 139.691711 }, // Токио
-            { latitude: -33.448376, longitude: -70.669265 }, // Сантьяго
-            { latitude: -23.550520, longitude: -46.633308 }, // Сан-Паулу
-            { latitude: 55.755825, longitude: 37.617298 }   // Москва (другая точка)
-        ];
-
-        // Добавление маркеров на карту
-        coordinates.forEach(coord => {
-            L.marker([coord.latitude, coord.longitude]).addTo(map);
-        });
-    </script>
+    <script src="app.js"></script>
 </body>
 
 </html>

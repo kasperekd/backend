@@ -11,3 +11,10 @@ CREATE TABLE cell_data (
     rsrp INT NOT NULL,
     rsrq INT NOT NULL
 );
+
+CREATE TABLE base_station_coordinates (
+    id SERIAL PRIMARY KEY,
+    cell_id BIGINT NOT NULL,
+    calculated_latitude DOUBLE PRECISION NOT NULL,
+    calculated_longitude DOUBLE PRECISION NOT NULL
+);

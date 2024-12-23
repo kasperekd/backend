@@ -31,7 +31,6 @@ void PostgresDB::disconnect() {
 pqxx::result PostgresDB::executeQuery(const std::string& query,
                                       const std::vector<std::string>& params) {
     try {
-        // Логирование параметров
         std::cout << "Parameters count: " << params.size() << std::endl;
         for (size_t i = 0; i < params.size(); ++i) {
             std::cout << "Param[" << i << "]: " << params[i] << std::endl;
@@ -42,7 +41,6 @@ pqxx::result PostgresDB::executeQuery(const std::string& query,
                 "Incorrect number of parameters for query. Expected 10.");
         }
 
-        // Преобразование вектора строк в вектор const char*
         std::vector<const char*> c_params;
         c_params.reserve(params.size());
         for (const auto& param : params) {
@@ -55,7 +53,6 @@ pqxx::result PostgresDB::executeQuery(const std::string& query,
 
         pqxx::work txn(*m_connection);
 
-        // Используем параметры индивидуально, чтобы избежать проблем
         pqxx::result res =
             txn.exec_params(query, c_params[0], c_params[1], c_params[2],
                             c_params[3], c_params[4], c_params[5], c_params[6],

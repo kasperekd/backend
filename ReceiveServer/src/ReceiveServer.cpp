@@ -64,7 +64,6 @@ void ReceiveServer::parseAndSaveData(const std::string& rawJson,
                     "Missing required fields in JSON entry.");
             }
 
-            // Optional fields (Tracking Area Code, RSRP, RSRQ)
             std::string trackingAreaCode =
                 entry.has("trackingAreaCode")
                     ? std::to_string(entry["trackingAreaCode"].i())
@@ -74,7 +73,6 @@ void ReceiveServer::parseAndSaveData(const std::string& rawJson,
             std::string rsrq =
                 entry.has("RSRQ") ? std::to_string(entry["RSRQ"].i()) : "NULL";
 
-            // Парсинг координат
             std::string coordinates = entry["coordinates"].s();
             size_t commaPos = coordinates.find(',');
             if (commaPos == std::string::npos) {

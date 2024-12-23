@@ -1,20 +1,58 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-    text-align: center;
-    padding: 20px;
+    margin: 0;
+    padding: 0;
 }
 
-header {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 0;
+/* Карта */
+#map {
+    height: 800px;
+    width: 100%;
 }
 
-button {
-    padding: 10px 20px;
-    margin-top: 20px;
-    font-size: 16px;
+/* Контейнер для управления */
+#controls {
+    margin: 10px;
+}
+
+/* Поле ввода Cell ID */
+#cellIdInput {
+    margin-right: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Кнопки запроса */
+#fetchButton {
+    padding: 5px 10px;
     cursor: pointer;
+    background-color: #0078d7;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+#fetchAllButton {
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: #0078d7;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+#fetchButton:hover {
+    background-color: #005bb5;
+}
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+}
+
+.leaflet-control-attribution {
+    display: none;
 }
