@@ -29,14 +29,14 @@ struct BaseStationCoordinates {
 
 class BaseStationCalculator {
    public:
-    // Конструктор
     BaseStationCalculator();
 
-    // Метод для расчета координат базовой станции
     BaseStationCoordinates calculate(const std::vector<CellData>& cellData);
 
    private:
-    // Вспомогательные методы, если требуется
+    std::pair<double, double> triangulate(
+        const std::vector<CellData>& cellData);
+    double calculateDistance(int signalStrength);
     double calculateWeightedAverage(const std::vector<double>& values,
                                     const std::vector<int>& weights);
 };

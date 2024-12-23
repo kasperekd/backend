@@ -31,10 +31,10 @@ void PostgresDB::disconnect() {
 pqxx::result PostgresDB::executeQuery(const std::string& query,
                                       const std::vector<std::string>& params) {
     try {
-        std::cout << "Parameters count: " << params.size() << std::endl;
-        for (size_t i = 0; i < params.size(); ++i) {
-            std::cout << "Param[" << i << "]: " << params[i] << std::endl;
-        }
+        // std::cout << "Parameters count: " << params.size() << std::endl;
+        // for (size_t i = 0; i < params.size(); ++i) {
+        //     std::cout << "Param[" << i << "]: " << params[i] << std::endl;
+        // }
 
         if (params.size() != 10) {
             throw std::runtime_error(

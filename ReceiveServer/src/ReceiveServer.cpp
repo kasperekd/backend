@@ -65,7 +65,7 @@ void ReceiveServer::start() {
 void ReceiveServer::parseAndSaveData(const std::string& rawJson,
                                      PostgresDB& db) {
     try {
-        std::cout << rawJson << std::endl;
+        // std::cout << rawJson << std::endl;
         auto data = crow::json::load(rawJson);
 
         if (!data || data.error()) {

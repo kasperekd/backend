@@ -8,8 +8,6 @@
 #include "BaseStationCalculator.h"
 #include "CalculationModule.h"
 
-// Структура для хранения данных о базовой станции
-
 #ifndef BSC_STUCT
 struct CellData {
     int id;
@@ -38,10 +36,9 @@ class CalculationModule {
 
    private:
     std::string dbConnString;
-    int intervalMinutes;  // Интервал в минутах
-    bool running;         // Флаг работы модуля
+    int intervalMinutes;
+    bool running;
 
-    // Вспомогательные методы
     void processCalculations();
     std::vector<std::vector<CellData>> fetchGroupedDataFromDatabase();
     void writeResultsToDatabase(const BaseStationCoordinates& result);
