@@ -1,6 +1,7 @@
 #ifndef BASE_STATION_CALCULATOR_H
 #define BASE_STATION_CALCULATOR_H
 
+#include <optional>
 #include <vector>
 
 #include "BaseStationCalculator.h"
@@ -37,6 +38,15 @@ class BaseStationCalculator {
     std::pair<double, double> triangulate(
         const std::vector<CellData>& cellData);
     double calculateDistance(int signalStrength);
+    double calculateAngle(int signalStrength, int rsrq);
+    std::optional<std::pair<double, double>> calculateIntersection(
+        const std::pair<double, double>& point1,
+        const std::pair<double, double>& direction1,
+        const std::pair<double, double>& point2,
+        const std::pair<double, double>& direction2);
+
+    std::pair<double, double> BaseStationCalculator::calculateByDirection(
+        const std::vector<CellData>& cellData);
     double calculateWeightedAverage(const std::vector<double>& values,
                                     const std::vector<int>& weights);
 };
