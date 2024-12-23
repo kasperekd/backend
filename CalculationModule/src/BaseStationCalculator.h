@@ -39,13 +39,20 @@ class BaseStationCalculator {
         const std::vector<CellData>& cellData);
     double calculateDistance(int signalStrength);
     double calculateAngle(int signalStrength, int rsrq);
+
+    std::pair<double, double> calculateByDirectionWithClustering(
+        const std::vector<CellData>& cellData);
+    std::pair<double, double> calculateClusterCentroid(
+        const std::vector<std::pair<double, double>>& points);
+    double distanceBetweenPoints(const std::pair<double, double>& point1,
+                                 const std::pair<double, double>& point2);
     std::optional<std::pair<double, double>> calculateIntersection(
         const std::pair<double, double>& point1,
         const std::pair<double, double>& direction1,
         const std::pair<double, double>& point2,
         const std::pair<double, double>& direction2);
 
-    std::pair<double, double> BaseStationCalculator::calculateByDirection(
+    std::pair<double, double> calculateByDirection(
         const std::vector<CellData>& cellData);
     double calculateWeightedAverage(const std::vector<double>& values,
                                     const std::vector<int>& weights);
