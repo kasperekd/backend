@@ -5,14 +5,12 @@
 #include <pqxx/pqxx>
 #include <stdexcept>
 
-// Конструктор
 CalculationModule::CalculationModule(const std::string& dbConnString,
                                      int intervalMinutes)
     : dbConnString(dbConnString),
       intervalMinutes(intervalMinutes),
       running(true) {}
 
-// Метод запуска
 void CalculationModule::start() {
     while (running) {
         try {
@@ -25,9 +23,7 @@ void CalculationModule::start() {
     }
 }
 
-// Основной процесс вычислений
 void CalculationModule::processCalculations() {
-    // Получаем данные из БД, сгруппированные по cell_id
     auto groupedData = fetchGroupedDataFromDatabase();
     BaseStationCalculator calculator;
 
@@ -43,7 +39,6 @@ void CalculationModule::processCalculations() {
     }
 }
 
-// Получение данных из БД, сгруппированных по cell_id
 std::vector<std::vector<CellData>>
 CalculationModule::fetchGroupedDataFromDatabase() {
     std::map<int, std::vector<CellData>> groupedData;
@@ -76,7 +71,6 @@ CalculationModule::fetchGroupedDataFromDatabase() {
         std::cerr << "Database fetch error: " << ex.what() << std::endl;
     }
 
-    // Преобразуем map в vector<vector<CellData>> для удобства
     std::vector<std::vector<CellData>> grouped;
     for (auto& [cell_id, group] : groupedData) {
         grouped.push_back(std::move(group));
@@ -84,7 +78,6 @@ CalculationModule::fetchGroupedDataFromDatabase() {
     return grouped;
 }
 
-// Запись результата в БД
 void CalculationModule::writeResultsToDatabase(
     const BaseStationCoordinates& result) {
     try {
