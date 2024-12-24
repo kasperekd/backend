@@ -1,6 +1,9 @@
 #ifndef BASE_STATION_CALCULATOR_H
 #define BASE_STATION_CALCULATOR_H
 
+#include <bits/algorithmfwd.h>
+
+#include <map>
 #include <optional>
 #include <vector>
 
@@ -56,6 +59,12 @@ class BaseStationCalculator {
         const std::vector<CellData>& cellData);
     double calculateWeightedAverage(const std::vector<double>& values,
                                     const std::vector<int>& weights);
+
+    std::vector<std::tuple<double, double, double>> preprocessData(
+        const std::vector<CellData>& cellData);
+    std::optional<std::pair<double, double>> trilateration(
+        const std::vector<std::tuple<double, double, double>>& points);
+    double BaseStationCalculator::calculateWeight(int rsrq);
 };
 
 #endif  // BASE_STATION_CALCULATOR_H
