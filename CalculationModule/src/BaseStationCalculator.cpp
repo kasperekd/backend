@@ -343,22 +343,25 @@ BaseStationCoordinates BaseStationCalculator::calculate(
             "Cell data is empty. Cannot calculate base station coordinates.");
     }
 
-    // Шаг 1: Предварительная обработка данных
     auto processedData = preprocessData(cellData);
     if (processedData.size() < 3) {
         throw std::runtime_error(
             "Not enough valid data points for trilateration (minimum 3 "
-            "required).");
+            "required)");
     }
 
-    // Шаг 2: Расчёт координат с использованием трилатерации
     auto coordinates = trilateration(processedData);
     if (!coordinates.has_value()) {
-        throw std::runtime_error(
-            "Unable to determine base station location via trilateration.");
+        // Используем кластеризацию как fallback
+        double avgLat = 0, avgLon = 0;
+        for (const auto& [lat, lon, dist] : processedData) {
+            avgLat += lat;
+            avgLon += lon;
+        }
+        size_t pointCount = processedData.size();
+        return {cellData[0].cell_id, avgLat / pointCount, avgLon / pointCount};
     }
 
-    // Возвращаем результат
     return {cellData[0].cell_id, coordinates->first, coordinates->second};
 }
 
@@ -393,7 +396,7 @@ BaseStationCalculator::preprocessData(const std::vector<CellData>& cellData) {
 }
 
 double BaseStationCalculator::calculateDistance(int signalStrength) {
-    constexpr int A = -67;  // RSSI на расстоянии 1 метра
+    constexpr int A = -40;  // RSSI на расстоянии 1 метра
     return std::pow(10.0, (A - signalStrength) / 20.0);  // Метры
 }
 
@@ -403,28 +406,53 @@ std::optional<std::pair<double, double>> BaseStationCalculator::trilateration(
         return std::nullopt;  // Трилатерация невозможна
     }
 
-    // Используем первые три точки для трилатерации
-    auto [x1, y1, r1] = points[0];
-    auto [x2, y2, r2] = points[1];
-    auto [x3, y3, r3] = points[2];
+    // Перебираем комбинации трёх точек для устойчивости
+    std::optional<std::pair<double, double>> result;
+    double minError = std::numeric_limits<double>::max();
 
-    double A = 2 * (x2 - x1);
-    double B = 2 * (y2 - y1);
-    double C = r1 * r1 - r2 * r2 - x1 * x1 + x2 * x2 - y1 * y1 + y2 * y2;
+    for (size_t i = 0; i < points.size(); ++i) {
+        for (size_t j = i + 1; j < points.size(); ++j) {
+            for (size_t k = j + 1; k < points.size(); ++k) {
+                auto [x1, y1, r1] = points[i];
+                auto [x2, y2, r2] = points[j];
+                auto [x3, y3, r3] = points[k];
 
-    double D = 2 * (x3 - x2);
-    double E = 2 * (y3 - y2);
-    double F = r2 * r2 - r3 * r3 - x2 * x2 + x3 * x3 - y2 * y2 + y3 * y3;
+                double A = 2 * (x2 - x1);
+                double B = 2 * (y2 - y1);
+                double C =
+                    r1 * r1 - r2 * r2 - x1 * x1 + x2 * x2 - y1 * y1 + y2 * y2;
 
-    double denominator = A * E - B * D;
-    if (std::fabs(denominator) < 1e-6) {
-        return std::nullopt;  // Прямые пересечения параллельны
+                double D = 2 * (x3 - x2);
+                double E = 2 * (y3 - y2);
+                double F =
+                    r2 * r2 - r3 * r3 - x2 * x2 + x3 * x3 - y2 * y2 + y3 * y3;
+
+                double denominator = A * E - B * D;
+                if (std::fabs(denominator) < 1e-6) {
+                    continue;  // Эти три окружности не пересекаются
+                }
+
+                double px = (C * E - B * F) / denominator;
+                double py = (A * F - C * D) / denominator;
+
+                // Рассчитываем ошибку как отклонение от радиусов
+                double error = std::abs(std::hypot(px - x1, py - y1) - r1) +
+                               std::abs(std::hypot(px - x2, py - y2) - r2) +
+                               std::abs(std::hypot(px - x3, py - y3) - r3);
+
+                if (error < minError) {
+                    minError = error;
+                    result = {{px, py}};
+                }
+            }
+        }
     }
 
-    double px = (C * E - B * F) / denominator;
-    double py = (A * F - C * D) / denominator;
+    if (result.has_value()) {
+        return result;
+    }
 
-    return {{px, py}};
+    return std::nullopt;  // Если не удалось найти результат
 }
 
 double BaseStationCalculator::calculateWeight(int rsrq) {

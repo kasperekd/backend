@@ -64,7 +64,7 @@ class BaseStationCalculator {
         const std::vector<CellData>& cellData);
     std::optional<std::pair<double, double>> trilateration(
         const std::vector<std::tuple<double, double, double>>& points);
-    double BaseStationCalculator::calculateWeight(int rsrq);
+    double calculateWeight(int rsrq);
 };
 
 #endif  // BASE_STATION_CALCULATOR_H
