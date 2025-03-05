@@ -8,7 +8,7 @@
 #include <vector>
 
 #include "BaseStationCalculator.h"
-#include "CalculationModule.h"  // Подключаем структуру CellData и другие зависимости
+#include "CalculationModule.h"
 
 #ifndef BSC_STUCT
 struct CellData {
