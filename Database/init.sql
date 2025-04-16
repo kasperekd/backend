@@ -18,3 +18,5 @@ CREATE TABLE base_station_coordinates (
     calculated_latitude DOUBLE PRECISION NOT NULL,
     calculated_longitude DOUBLE PRECISION NOT NULL
 );
+
+CREATE UNIQUE INDEX unique_cell_id ON base_station_coordinates(cell_id);
