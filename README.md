@@ -56,7 +56,7 @@ git clone https://github.com/kasperekd/backend.git
 
 2. Запустить с помощью Docker Compose:
 ```bash
-docker-compose up --build
+./start.sh
 ```
 
 После запуска будут доступны следующие сервисы:
